@@ -95,6 +95,17 @@ public class AddressBookTest {
 		List<ContactPerson> contactData = addressBookDirectory.getContactsBasedOnStartDateUsingPreparedStatement(IOService.DB_IO, startDate, endDate);
 		Assert.assertEquals(5, contactData.size());
 	}
-	
+	@Test
+	public void givenNewEmployee_WhenAdded_ShouldSyncWithUpdatedDB() {
+		
+		String dateAdded = "2017-02-12";
+		AddressBookDirectory addressBookDirectory = new AddressBookDirectory();
+		addressBookDirectory.readContactDetails(IOService.DB_IO);
+		addressBookDirectory.addContactToUpdatedDatabse(8, "Amy", "Gonzales", 123456789, "amy@gmail.com", 6, "Kodagu", "Karnataka", 345567, dateAdded);
+
+		boolean result = addressBookDirectory.checkContactDetailsInSyncWithDB("Amy");
+		Assert.assertTrue(result);
+		
+	}
 	
 }
