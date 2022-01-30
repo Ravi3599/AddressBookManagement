@@ -87,6 +87,15 @@ public class AddressBookTest {
 		Assert.assertTrue(result);
 		
 	}
+	@Test
+	public void givenStartDateRange_WhenMatchesUsingPreparedStatement_ShouldReturnEmployeeDetails() {
+		
+		String startDate = "2013-01-01";
+		String endDate = "2021-01-01";
+		AddressBookDirectory addressBookDirectory = new AddressBookDirectory();
+		List<ContactPerson> contactData = addressBookDirectory.getContactsBasedOnStartDateUsingPreparedStatement(IOService.DB_IO, startDate, endDate);
+		Assert.assertEquals(5, contactData.size());
+	}
 	
 	
 }
