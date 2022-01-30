@@ -76,5 +76,17 @@ public class AddressBookTest {
 			Assert.assertEquals(expectedCountBasedOnGender, maximumSalaryBasedOnGender);
 		}
 	}
+	@Test 
+	public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDB() {
+		
+		AddressBookDirectory addressBookDirectory = new AddressBookDirectory();
+		List<ContactPerson> employeePayrollData = addressBookDirectory.readContactDetails(IOService.DB_IO);
+		addressBookDirectory.updateContactLastName("Rosa", "Ramirez");
+		
+		boolean result = addressBookDirectory.checkContactDetailsInSyncWithDB("Rosa");
+		Assert.assertTrue(result);
+		
+	}
+	
 	
 }
