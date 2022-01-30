@@ -1,12 +1,11 @@
 package com.bridgelabz.addressbooksystemjdbc;
 
-import java.io.IOException;   
+import java.io.IOException;    
 import java.util.ArrayList; 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
 import com.bridgelabz.addressbooksystemjdbc.AddressBook.IOService;
 
 
@@ -277,5 +276,13 @@ public class AddressBookDirectory implements AddressBookDirectoryIF{
 		List<ContactPerson> contactDetailsList = addressBookDbService.getContactDataUsingName(firstName);
 		return contactDetailsList.get(0).equals(getContactData(firstName));
 	}
+
+	public List<ContactPerson> getContactsBasedOnStartDateUsingPreparedStatement(IOService ioService, String startDate, String endDate) {
+		
+		if(ioService.equals(IOService.DB_IO))
+			this.contactsList = addressBookDbService.getContactsBasedOnStartDateUsingPreparedStatement(startDate, endDate);
+		return this.contactsList;
+	}
+	
 	
 }

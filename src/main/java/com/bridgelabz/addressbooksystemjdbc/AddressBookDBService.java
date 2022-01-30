@@ -1,6 +1,6 @@
 package com.bridgelabz.addressbooksystemjdbc;
 
-import java.sql.Connection; 
+import java.sql.Connection;  
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -227,6 +227,22 @@ public class AddressBookDBService {
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
+		}
+		return contactList;
+	}
+
+	public List<ContactPerson> getContactsBasedOnStartDateUsingPreparedStatement(String startDate, String endDate) {
+		
+		String sqlStatement = String.format("SELECT * FROM contact JOIN address ON contact.address_id = address.address_id WHERE date_added BETWEEN '%s' AND '%s';",startDate, endDate);
+		List<ContactPerson> contactList = new ArrayList<>();
+				
+		try (Connection connection = getConnection();){
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sqlStatement);
+			contactList = this.getContactDetails(resultSet);
+		}
+		catch(SQLException exception){
+			exception.printStackTrace();
 		}
 		return contactList;
 	}
