@@ -8,7 +8,6 @@ import org.junit.Test;
 
 public class AddressBookTest {
 	
-
 	static AddressBook addressBook = new AddressBook();
 	
 	@BeforeClass
