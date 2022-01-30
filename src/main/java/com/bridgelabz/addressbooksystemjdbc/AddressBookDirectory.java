@@ -1,6 +1,6 @@
 package com.bridgelabz.addressbooksystemjdbc;
 
-import java.io.IOException;  
+import java.io.IOException;   
 import java.util.ArrayList; 
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +13,20 @@ import com.bridgelabz.addressbooksystemjdbc.AddressBook.IOService;
 public class AddressBookDirectory implements AddressBookDirectoryIF{
 	
 	public AddressBook addressBook;
+	List<ContactPerson> contactsList = new ArrayList<ContactPerson>();
 	Scanner scannerObject = new Scanner(System.in);
 	Map<String,AddressBook> addressBookDirectory = new HashMap<String,AddressBook>();
+	private AddressBookDBService addressBookDbService;
+	
+
+	public AddressBookDirectory(){
+		addressBookDbService =  AddressBookDBService.getInstance();
+	}
+	
+	public AddressBookDirectory(List<ContactPerson> contactList) {
+		this();
+		this.contactsList = contactList;
+	}
 	
 	@Override
 	public void operationDirectory() {
@@ -193,19 +205,27 @@ public class AddressBookDirectory implements AddressBookDirectoryIF{
 		System.out.println("}");
 		
 	}
+	
+	private ContactPerson getContactData(String firstName) {
+		
+		return this.contactsList.stream()
+				.filter(EmployeePayrollDataItem -> EmployeePayrollDataItem.getFirstName().equals(firstName))
+				.findFirst()
+				.orElse(null);
+	}
 
 	public List<ContactPerson> readContactDetails(IOService ioService) {
-		List<ContactPerson> contactsList = new ArrayList<ContactPerson>();
+		
 		if(ioService.equals(IOService.DB_IO))
-			contactsList = new AddressBookDBService().readContactDetails();
-		return contactsList;	
+			this.contactsList = addressBookDbService.readContactDetails();
+		return this.contactsList;	
 	}
 	
 	public Map<Integer,String> readAddressDetails(IOService ioService) {
 		
 		Map<Integer,String> contactsList = new HashMap<Integer,String>();
 		if(ioService.equals(IOService.DB_IO))
-			contactsList = new AddressBookDBService().readAddressDetails();
+			contactsList = addressBookDbService.readAddressDetails();
 		return contactsList;
 	}
 
@@ -213,7 +233,7 @@ public class AddressBookDirectory implements AddressBookDirectoryIF{
 		
 		List<ContactPerson> contactsList = new ArrayList<ContactPerson>();
 		if(ioService.equals(IOService.DB_IO))
-			contactsList = new AddressBookDBService().getContactDetailsBasedOnCityUsingStatement(city);
+			contactsList = addressBookDbService.getContactDetailsBasedOnCityUsingStatement(city);
 		return contactsList;
 	}
 
@@ -221,7 +241,7 @@ public class AddressBookDirectory implements AddressBookDirectoryIF{
 		
 		List<ContactPerson> contactsList = new ArrayList<ContactPerson>();
 		if(ioService.equals(IOService.DB_IO))
-			contactsList = new AddressBookDBService().getContactDetailsBasedOnStateUsingStatement(state);
+			contactsList = addressBookDbService.getContactDetailsBasedOnStateUsingStatement(state);
 		return contactsList;
 	}
 
@@ -229,7 +249,7 @@ public class AddressBookDirectory implements AddressBookDirectoryIF{
 		
 		List<Integer> countBasedOnCity = new ArrayList<Integer>();
 		if(ioService.equals(IOService.DB_IO))
-			countBasedOnCity = new AddressBookDBService().getCountOfEmployeesBasedOnCityUsingStatement();
+			countBasedOnCity = addressBookDbService.getCountOfEmployeesBasedOnCityUsingStatement();
 		return countBasedOnCity;
 	}
 	
@@ -237,8 +257,25 @@ public class AddressBookDirectory implements AddressBookDirectoryIF{
 		
 		List<Integer> countBasedOnState = new ArrayList<Integer>();
 		if(ioService.equals(IOService.DB_IO))
-			countBasedOnState = new AddressBookDBService().getCountOfEmployeesBasedOnStateUsingStatement();
+			countBasedOnState = addressBookDbService.getCountOfEmployeesBasedOnStateUsingStatement();
 		return countBasedOnState;
 	}	
+	
+	public void updateContactLastName(String firstName, String lastName) {
+		
+		int result = addressBookDbService.updateContactData(firstName, lastName);
+		if(result == 0) 
+			return;
+		
+		ContactPerson contactDetailsData = this.getContactData(firstName);
+		if(contactDetailsData != null)
+			contactDetailsData.setLastName(lastName);		
+	}
+	
+	public boolean checkContactDetailsInSyncWithDB(String firstName) {
+		
+		List<ContactPerson> contactDetailsList = addressBookDbService.getContactDataUsingName(firstName);
+		return contactDetailsList.get(0).equals(getContactData(firstName));
+	}
 	
 }

@@ -1,7 +1,8 @@
 package com.bridgelabz.addressbooksystemjdbc;
 
-import java.sql.Connection;
+import java.sql.Connection; 
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +12,20 @@ import java.util.List;
 import java.util.Map;
 
 public class AddressBookDBService {
+	
+	private static AddressBookDBService addressbookDBService;
+	private PreparedStatement addressBookDataStatement;
+
+	private AddressBookDBService() {
+		
+	}
+	
+	public static AddressBookDBService getInstance() {
+		if(addressbookDBService == null)
+			addressbookDBService = new AddressBookDBService();
+		return addressbookDBService;
+	}
+	
 	
 	private Connection getConnection() throws SQLException {
 		
@@ -65,6 +80,18 @@ public class AddressBookDBService {
 		}
 		return addressBookList;
 		
+	}
+	
+	private void preparedStatementForContactData() {
+		
+		try {
+			Connection connection = this.getConnection();
+			String sqlStatement = "SELECT * FROM contact JOIN address ON contact.address_id = address.address_id WHERE first_name = ?;";
+			addressBookDataStatement = connection.prepareStatement(sqlStatement);
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<ContactPerson> readContactDetails() {
@@ -167,5 +194,40 @@ public class AddressBookDBService {
 			e.printStackTrace();
 		}
 		return countBasedOnState;
+	}
+	
+	public int updateContactData(String firstName, String lastName) {
+		
+		return this.updateContactDataUsingStatement(firstName,lastName);
+	}	
+
+	public int updateContactDataUsingStatement(String firstName, String lastName) {
+		
+		String sqlStatement = String.format("UPDATE contact SET last_name = %s WHERE first_name = '%s';", lastName, firstName);
+		
+		try (Connection connection = getConnection()){
+			Statement statement = connection.createStatement();
+			return statement.executeUpdate(sqlStatement);
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public List<ContactPerson> getContactDataUsingName(String firstName) {
+		
+		List<ContactPerson> contactList = null;
+		if(this.addressBookDataStatement == null)
+			this.preparedStatementForContactData();
+		try {
+			addressBookDataStatement.setString(1,firstName);
+			ResultSet resultSet = addressBookDataStatement.executeQuery();
+			contactList = this.getContactDetails(resultSet);	
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return contactList;
 	}
 }
