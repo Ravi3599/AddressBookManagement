@@ -214,7 +214,6 @@ public class AddressBookDBService {
 		}
 		return 0;
 	}
-	
 	public List<ContactPerson> getContactDataUsingName(String firstName) {
 		
 		List<ContactPerson> contactList = null;

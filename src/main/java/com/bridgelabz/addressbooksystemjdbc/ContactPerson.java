@@ -1,5 +1,7 @@
 package com.bridgelabz.addressbooksystemjdbc;
 
+import java.time.LocalDate;
+
 import com.opencsv.bean.CsvBindByName;
 
 public class ContactPerson {
@@ -16,6 +18,8 @@ public class ContactPerson {
 	@CsvBindByName(column = "Phone Number")
 	private long phoneNumber;
 	
+	private LocalDate dateAdded;
+	
 	public Address address = new Address();
 
 	public ContactPerson(String firstName, String lastName, String email, long phoneNumber, String city, String state, long zip) {
@@ -29,6 +33,14 @@ public class ContactPerson {
 		this.address.setZip(zip);
 	}
 	
+	public LocalDate getDateAdded() {
+		return dateAdded;
+	}
+
+	public void setDateAdded(LocalDate dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+
 	public ContactPerson() {
 	}
 	
