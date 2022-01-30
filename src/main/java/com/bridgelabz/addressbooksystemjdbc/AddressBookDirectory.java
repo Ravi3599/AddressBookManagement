@@ -1,6 +1,7 @@
 package com.bridgelabz.addressbooksystemjdbc;
 
-import java.io.IOException;    
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList; 
 import java.util.HashMap;
 import java.util.List;
@@ -283,6 +284,10 @@ public class AddressBookDirectory implements AddressBookDirectoryIF{
 			this.contactsList = addressBookDbService.getContactsBasedOnStartDateUsingPreparedStatement(startDate, endDate);
 		return this.contactsList;
 	}
-	
+
+	public void addContactToUpdatedDatabse(int id, String firstName, String lastName, long phoneNumber, String email, int addressId, String city, String state, long zip, String dateAdded) {
+		
+		contactsList.add(addressBookDbService.addNewContactToContacts(id, firstName, lastName, phoneNumber, email, addressId, city, state, zip, dateAdded));
+	}	
 	
 }

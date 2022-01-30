@@ -6,6 +6,8 @@ import com.opencsv.bean.CsvBindByName;
 
 public class ContactPerson {
 	
+	private int contactid;
+	
 	@CsvBindByName(column = "First Name")
 	private String firstName;
 	
@@ -21,16 +23,30 @@ public class ContactPerson {
 	private LocalDate dateAdded;
 	
 	public Address address = new Address();
-
-	public ContactPerson(String firstName, String lastName, String email, long phoneNumber, String city, String state, long zip) {
+	
+	public ContactPerson(int id, String firstName, String lastName, String email, long phoneNumber) {
 		
+		this.contactid = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
+	}
+	
+	public ContactPerson(int id, String firstName, String lastName, String email, long phoneNumber, String city, String state, long zip) {
+		
+		this(id, firstName, lastName, email, phoneNumber);
 		this.address.setCity(city);
 		this.address.setState(state);
 		this.address.setZip(zip);
+	}
+	
+	public void setContactid(int contactid) {
+		this.contactid = contactid;
+	}
+	
+	public int getContactid() {
+		return contactid;
 	}
 	
 	public LocalDate getDateAdded() {
